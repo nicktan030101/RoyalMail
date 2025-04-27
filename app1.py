@@ -1,60 +1,54 @@
 import streamlit as st
 
-st.set_page_config(page_title="Loyalty Coupon App", layout="centered")
+# --- Royal Mail Loyalty Program App ---
+st.set_page_config(page_title="Royal Mail Loyalty Program", page_icon="🌐", layout="centered")
 
-# Dummy coupon list
-coupons = [
-    {"id": 1, "title": "10% Off"},
-    {"id": 2, "title": "Free Coffee"},
-    {"id": 3, "title": "Buy 1 Get 1 Free"},
+# --- Header ---
+st.image("https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Royal_Mail.svg/1200px-Royal_Mail.svg.png", width=150)
+st.title("Royal Mail Loyalty Program")
+
+# --- Simulated Customer Data ---
+customer_name = "John Doe"
+loyalty_tier = "Silver Member"
+points_balance = 1450
+points_to_next_tier = 550
+
+# --- Customer Overview ---
+st.header(f"Welcome, {customer_name}!")
+st.subheader(loyalty_tier)
+st.metric(label="Points Balance", value=f"{points_balance} points")
+
+# Progress Bar to Gold Tier
+st.progress(points_balance / (points_balance + points_to_next_tier))
+st.caption(f"{points_to_next_tier} points to reach Gold Tier!")
+
+# --- Rewards Section ---
+st.header("Available Rewards")
+
+rewards = [
+    {"name": "£5 Postal Credit", "cost": 500},
+    {"name": "Free Delivery Upgrade", "cost": 1000},
+    {"name": "Free Stamps", "cost": 750}
 ]
 
-# Initialize session state
-if "user" not in st.session_state:
-    st.session_state.user = None
-if "user_data" not in st.session_state:
-    st.session_state.user_data = {}
+cols = st.columns(3)
 
-# --- User Entry Section ---
-st.title("🎉 Loyalty Coupon Program")
-
-if st.session_state.user is None:
-    user_input = st.text_input("Enter your name or email:")
-    if st.button("Start"):
-        if user_input:
-            st.session_state.user = user_input
-            if user_input not in st.session_state.user_data:
-                st.session_state.user_data[user_input] = {"coupons": [], "points": 0}
-        else:
-            st.warning("Please enter a valid name or email.")
-
-# --- Coupon Collection Section ---
-else:
-    st.subheader(f"Welcome, {st.session_state.user}!")
-    user_info = st.session_state.user_data[st.session_state.user]
-
-    st.markdown("### Available Coupons")
-    for c in coupons:
-        collected = c["id"] in user_info["coupons"]
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            st.markdown(f"**{c['title']}**")
-        with col2:
-            if collected:
-                st.success("Collected")
+for idx, reward in enumerate(rewards):
+    with cols[idx % 3]:
+        st.subheader(reward["name"])
+        st.text(f"Cost: {reward['cost']} points")
+        if st.button(f"Redeem {reward['name']}", key=idx):
+            if points_balance >= reward['cost']:
+                points_balance -= reward['cost']
+                st.success(f"Successfully redeemed {reward['name']}!")
             else:
-                if st.button("Collect", key=f"collect_{c['id']}"):
-                    user_info["coupons"].append(c["id"])
-                    user_info["points"] += 1
-                    st.experimental_rerun()
+                st.error("Not enough points to redeem this reward.")
 
-    # Loyalty Progress
-    st.markdown("### 🎯 Loyalty Points")
-    st.info(f"You have {user_info['points']} point(s).")
+# --- Activity Section ---
+st.header("Recent Activity")
+st.write("- Redeemed: Free Stamps")
+st.write("- Delivered Package: 20 April 2025")
+st.write("- Tier Upgrade: Moved to Silver (March 2025)")
 
-    # Example reward logic
-    if user_info["points"] >= 5:
-        st.success("🎁 You’ve earned a reward! Redeem at the counter.")
-    
-    if st.button("🔁 Log out"):
-        st.session_state.user = None
+# Footer
+st.caption("Royal Mail © 2025 Loyalty Program")
