@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Royal Mail Loyalty Program", page_icon="🌐", layout="centered")
 
 # --- Header ---
-st.image("https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Royal_Mail.svg/1200px-Royal_Mail.svg.png", width=150)
+st.image("Royal Mail Logo (1).png", width=150)
 st.title("Royal Mail Loyalty Program")
 
 # --- Simulated Customer Data ---
